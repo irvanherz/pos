@@ -7,9 +7,10 @@ Sebelum memulai menggunakan POS, clone source code ke folder, lalu dilanjutkan d
 ```sh
 $ cd dir
 $ git clone https://github.com/irvanherz/pos.git
-$ yarn add express body-parser mysql multer jsonwebtoken cors morgan nodemon dotenv
+$ yarn add express body-parser mysql multer jsonwebtoken cors morgan nodemon
 ```
-POS menggunakan MySQL untuk 
+POS menggunakan MySQL untuk dapat berjalan. Sehingga pastikan sebelum menjalankan aplikasi POS, MySQL sudah terinstal dan berjalan layanannya. Jangan lupa juga untuk mengubah konfigurasi database dari file `.env` yang bisa ditemukan di folder root.
+
 Setelahnya POS dapat segera dijalankan dengan *yarn*.
 ```
 $ yarn start
@@ -39,7 +40,7 @@ Mendaftarkan user baru
 {
     "name": "John Doe",
     "username": "john_doe",
-    "password": "abcde12345"
+    "password": "abcde12345",
     "role": "0",
     "status": "0"
 }
@@ -316,3 +317,152 @@ Mengambil data deretan kategori dari dalam database.
 }
 ```
 
+### Manajemen Order
+#### Tambah Order
+Menambah produk-produk sebagai sebuah order baru.
+*URL* : `/orders/`
+*Method* : `POST`
+*Auth required* : YES
+*Permissions required* : YES
+
+**Success Response**
+*Code* : `200 OK`
+
+**Sample Request**
+```json
+{
+    "orderItems": [
+        {
+            "product_id": 1,
+            "qty": 3
+        },
+        {
+            "product_id": 3,
+            "qty": "1"
+        }
+    ]
+}
+```
+
+**Output**
+```json
+{
+    "status": 200,
+    "data": {
+        "id": 1,
+        "cashier_id": 2,
+        "invoice_id": 7734562,
+        "price": 44000,
+        "orderItems": [
+            {
+                "id": 1,
+                "order_id": 7734562,
+                "product_id": 1,
+                "qty": 3,
+                "price": 30000,
+                "product": {
+                    "id": 1,
+                    "name": "Nasi Bakar",
+                    "description": "Cita rasa gurih menggoda tiada tara",
+                    "category": "Drinks",
+                    "image": null,
+                    "price": 10000,
+                    "created_at": "2020-01-22T17:49:12.000Z",
+                    "updated_at": "2020-01-22T17:49:12.000Z"
+                }
+            },
+            {
+                ...
+            }
+        ]
+    }
+}
+```
+
+#### Hapus Order
+Menghapus order dari database
+*URL* : `/orders/:id`
+*Method* : `DELETE`
+*Auth required* : YES
+*Permissions required* : YES
+
+**Success Response**
+*Code* : `200 OK`
+
+**Sample Output**
+```json
+{
+    "status": 200,
+    "data": {
+        "id": "2",
+        "message": "Delete OK"
+    }
+}
+```
+
+#### Tampilkan Sebuah Order
+Mengambil data sebuah produk berdasarkan parameter ID nya.
+*URL* : `/orders/:id`
+*Method* : `GET`
+*Auth required* : YES
+*Permissions required* : YES
+
+**Success Response**
+*Code* : `200 OK`
+
+**Sample Output**
+```json
+{
+    "status": 200,
+    "data": {
+        "id": 1,
+        "cashier_id": 2,
+        "invoice_id": 7734562,
+        "created_at": "2020-01-22T18:32:32.000Z",
+        "updated_at": "2020-01-22T18:32:32.000Z",
+        "price": 44000,
+        "orderItems": [
+            {
+                "id": 1,
+                "order_id": 7734562,
+                "product_id": 1,
+                "qty": 3,
+                "created_at": "2020-01-22T18:32:32.000Z",
+                "updated_at": "2020-01-22T18:32:32.000Z",
+                "price": 30000
+            },
+            {
+                ...
+            }
+        ]
+    }
+}
+```
+
+#### Tampilkan Daftar Order
+Mengambil data deretan order dari dalam database. Output hampir sama seperti saat menampilkan sebuah order saja. Namun, di sini kita akan memperoleh order dalam bentuk array.
+*URL* : `/orders/`
+*Method* : `GET`
+*Auth required* : YES
+*Permissions required* : YES
+
+**Success Response**
+*Code* : `200 OK`
+
+**Sample Output**
+```json
+{
+    "status": 200,
+    "data": [
+        {
+            "id": 1,
+            "name": "Drinks",
+            "created_at": "2020-01-22T18:12:07.000Z",
+            "updated_at": "2020-01-22T18:12:07.000Z"
+        },
+        {
+            ...
+        }
+    ]
+}
+```
