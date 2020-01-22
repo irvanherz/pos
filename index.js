@@ -1,4 +1,5 @@
 const express = require('express')
+const dotenv = require('dotenv').config()
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const app = express()
@@ -14,10 +15,6 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(morgan('dev'))
 app.use('/', cors(corsOptions), routeBase)
-// app.use(function (err, req, res, next) {
-// 	console.error(err.stack)
-// 	helper.response(res,500,"Unhandled server error!")
-// })
 
 server = app.listen(3001, "127.0.0.1", () => {
 	console.log("Listening on 127.0.0.1:3001")

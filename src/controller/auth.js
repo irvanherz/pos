@@ -13,8 +13,6 @@ module.exports = {
     },
     signin: async (request, response) => {
         try {
-            console.log('ooooooooooooooooo');
-            
             const result = await user.get(request.body.username, request.body.password)
             const loginData = {id:result.id, name:result.name, username:result.username, role:result.role}
             console.log(loginData);
