@@ -7,7 +7,7 @@ Sebelum memulai menggunakan POS, clone source code ke folder, lalu dilanjutkan d
 ```sh
 $ cd dir
 $ git clone https://github.com/irvanherz/pos.git
-$ yarn add express body-parser mysql multer jsonwebtoken cors morgan nodemon
+$ yarn add express body-parser mysql multer jsonwebtoken cors morgan nodemon dotenv
 ```
 POS menggunakan MySQL untuk 
 Setelahnya POS dapat segera dijalankan dengan *yarn*.
