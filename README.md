@@ -60,7 +60,7 @@ Mendaftarkan user baru
 }
 ```
 #### Sign in
-Login dengan username dan password untuk memperoleh token JWT.
+Login dengan username dan password untuk memperoleh token JWT.</br>
 *URL* : `/auth/sigin`
 *Method* : `POST`
 *Auth required* : NO
