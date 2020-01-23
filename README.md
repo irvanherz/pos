@@ -17,9 +17,6 @@ $ yarn start
 ```
 ## Struktur Folder
 Direktori :
-```
-
-```
   - `/src/routes/`: berisi kode untuk menangani routing berdasarkan url dan request.
   - `/src/controller/`: berisi kode controller yang menjadi jembatan antara request dan model.
   - `/src/model`: berisi kode untuk abstraksi akses database
