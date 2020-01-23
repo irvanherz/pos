@@ -26,10 +26,10 @@ Direktori :
 ## Dokumentasi API
 ### Manajemen User
 #### Sign up
-Mendaftarkan user baru
-*URL* : `/auth/signup`
-*Method* : `POST`
-*Auth required* : NO
+Mendaftarkan user baru</br>
+*URL* : `/auth/signup`</br>
+*Method* : `POST`</br>
+*Auth required* : NO</br>
 *Permissions required* : None
 
 **Success Response**
@@ -61,9 +61,9 @@ Mendaftarkan user baru
 ```
 #### Sign in
 Login dengan username dan password untuk memperoleh token JWT.</br>
-*URL* : `/auth/sigin`
-*Method* : `POST`
-*Auth required* : NO
+*URL* : `/auth/sigin`</br>
+*Method* : `POST`</br>
+*Auth required* : NO</br>
 *Permissions required* : None
 
 **Success Response**
@@ -89,10 +89,10 @@ Login dengan username dan password untuk memperoleh token JWT.</br>
 
 ### Manajemen Produk
 #### Tambah Produk
-Menambah sebuah produk ke dalam database
-*URL* : `/products/`
-*Method* : `POST`
-*Auth required* : YES
+Menambah sebuah produk ke dalam database</br>
+*URL* : `/products/`</br>
+*Method* : `POST`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
@@ -123,17 +123,17 @@ Menambah sebuah produk ke dalam database
 ```
 
 #### Ubah Produk
-Mengubah sebuah produk yang sudah ada di dalam database. Format input dan output sama seperti saat menambah produk.
-*URL* : `/products/:id`
-*Method* : `PUT`
-*Auth required* : YES
+Mengubah sebuah produk yang sudah ada di dalam database. Format input dan output sama seperti saat menambah produk.</br>
+*URL* : `/products/:id`</br>
+*Method* : `PUT`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 #### Hapus Produk
-Menghapus sebuah produk dari database
-*URL* : `/products/:id`
-*Method* : `DELETE`
-*Auth required* : YES
+Menghapus sebuah produk dari database</br>
+*URL* : `/products/:id`</br>
+*Method* : `DELETE`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
@@ -151,10 +151,10 @@ Menghapus sebuah produk dari database
 ```
 
 #### Tampilkan Sebuah Produk
-Mengambil data sebuah produk berdasarkan parameter ID nya.
-*URL* : `/products/:id`
-*Method* : `GET`
-*Auth required* : YES
+Mengambil data sebuah produk berdasarkan parameter ID nya.</br>
+*URL* : `/products/:id`</br>
+*Method* : `GET`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
@@ -178,10 +178,10 @@ Mengambil data sebuah produk berdasarkan parameter ID nya.
 ```
 
 #### Tampilkan Daftar Produk
-Mengambil data deretan produk dari urutan paling baru.
-*URL* : `/products/`
-*Method* : `GET`
-*Auth required* : YES
+Mengambil data deretan produk dari urutan paling baru.</br>
+*URL* : `/products/`</br>
+*Method* : `GET`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
@@ -211,10 +211,10 @@ Mengambil data deretan produk dari urutan paling baru.
 
 ### Manajemen Kategori
 #### Tambah Kategori
-Menambah kategori produk baru ke dalam database
-*URL* : `/categories/`
-*Method* : `POST`
-*Auth required* : YES
+Menambah kategori produk baru ke dalam database</br>
+*URL* : `/categories/`</br>
+*Method* : `POST`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
@@ -239,17 +239,17 @@ Menambah kategori produk baru ke dalam database
 ```
 
 #### Ubah Kategori
-Mengubah sebuah kategori yang sudah ada di dalam database. Format input dan output sama seperti saat menambah kategori.
-*URL* : `/categories/:id`
-*Method* : `PUT`
-*Auth required* : YES
+Mengubah sebuah kategori yang sudah ada di dalam database. Format input dan output sama seperti saat menambah kategori.</br>
+*URL* : `/categories/:id`</br>
+*Method* : `PUT`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 #### Hapus Kategori
-Menghapus sebuah kategori dari database
-*URL* : `/categories/:id`
-*Method* : `DELETE`
-*Auth required* : YES
+Menghapus sebuah kategori dari database</br>
+*URL* : `/categories/:id`</br>
+*Method* : `DELETE`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
@@ -267,10 +267,10 @@ Menghapus sebuah kategori dari database
 ```
 
 #### Tampilkan Sebuah Kategori
-Mengambil data sebuah produk berdasarkan parameter ID nya.
-*URL* : `/categories/:id`
-*Method* : `GET`
-*Auth required* : YES
+Mengambil data sebuah produk berdasarkan parameter ID nya.</br>
+*URL* : `/categories/:id`</br>
+*Method* : `GET`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
@@ -290,10 +290,10 @@ Mengambil data sebuah produk berdasarkan parameter ID nya.
 ```
 
 #### Tampilkan Daftar Kategori
-Mengambil data deretan kategori dari dalam database.
-*URL* : `/categories/`
-*Method* : `GET`
-*Auth required* : YES
+Mengambil data deretan kategori dari dalam database.</br>
+*URL* : `/categories/`</br>
+*Method* : `GET`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
@@ -319,10 +319,10 @@ Mengambil data deretan kategori dari dalam database.
 
 ### Manajemen Order
 #### Tambah Order
-Menambah produk-produk sebagai sebuah order baru.
-*URL* : `/orders/`
-*Method* : `POST`
-*Auth required* : YES
+Menambah produk-produk sebagai sebuah order baru.</br>
+*URL* : `/orders/`</br>
+*Method* : `POST`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
@@ -380,10 +380,10 @@ Menambah produk-produk sebagai sebuah order baru.
 ```
 
 #### Hapus Order
-Menghapus order dari database
-*URL* : `/orders/:id`
-*Method* : `DELETE`
-*Auth required* : YES
+Menghapus order dari database</br>
+*URL* : `/orders/:id`</br>
+*Method* : `DELETE`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
@@ -401,10 +401,10 @@ Menghapus order dari database
 ```
 
 #### Tampilkan Sebuah Order
-Mengambil data sebuah produk berdasarkan parameter ID nya.
-*URL* : `/orders/:id`
-*Method* : `GET`
-*Auth required* : YES
+Mengambil data sebuah produk berdasarkan parameter ID nya.</br>
+*URL* : `/orders/:id`</br>
+*Method* : `GET`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
@@ -440,10 +440,10 @@ Mengambil data sebuah produk berdasarkan parameter ID nya.
 ```
 
 #### Tampilkan Daftar Order
-Mengambil data deretan order dari dalam database. Output hampir sama seperti saat menampilkan sebuah order saja. Namun, di sini kita akan memperoleh order dalam bentuk array.
-*URL* : `/orders/`
-*Method* : `GET`
-*Auth required* : YES
+Mengambil data deretan order dari dalam database. Output hampir sama seperti saat menampilkan sebuah order saja. Namun, di sini kita akan memperoleh order dalam bentuk array.</br>
+*URL* : `/orders/`</br>
+*Method* : `GET`</br>
+*Auth required* : YES</br>
 *Permissions required* : YES
 
 **Success Response**
