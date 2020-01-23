@@ -1,13 +1,13 @@
 # README
 
-POS adalah sebuah Application Programming Interfaces (APIs) backend yang dikembangkan untuk menciptakan integrasi antara aplikasi dan layanan manajemen penjualan toko.
+POS adalah sebuah Application Programming Interfaces (APIs) backend berbasis MVC yang didesain secara terstruktur. Aplikasi ini dikembangkan untuk mejembatani integrasi antara aplikasi dan layanan manajemen penjualan toko.
 
 ## Cara Pemakaian
 Sebelum memulai menggunakan POS, clone source code ke folder, lalu dilanjutkan dengan menginstall dependensi package yang diperlukan.
 ```sh
 $ cd dir
 $ git clone https://github.com/irvanherz/pos.git
-$ yarn add express body-parser mysql multer jsonwebtoken cors morgan nodemon
+$ yarn add express body-parser mysql multer dotenv jsonwebtoken cors morgan nodemon
 ```
 POS menggunakan MySQL untuk dapat berjalan. Sehingga pastikan sebelum menjalankan aplikasi POS, MySQL sudah terinstal dan berjalan layanannya. Jangan lupa juga untuk mengubah konfigurasi database dari file `.env` yang bisa ditemukan di folder root.
 
@@ -17,11 +17,14 @@ $ yarn start
 ```
 ## Struktur Folder
 Direktori :
-  - `/src/routes/`: berisi kode untuk menangani routing url.
-  - `/src/controller/`: berisi kode controller
-  - `/src/model`: berisi kode untuk model
-  - `/src/middleware/`: berisi kode untuk 
-  - `/src/helper/`:
+```
+
+```
+  - `/src/routes/`: berisi kode untuk menangani routing berdasarkan url dan request.
+  - `/src/controller/`: berisi kode controller yang menjadi jembatan antara request dan model.
+  - `/src/model`: berisi kode untuk abstraksi akses database
+  - `/src/middleware/`: berisi kode middleware, kebanyakan untuk filtering dan validasi.
+  - `/src/helper/`: berisi kode helper untuk membantu jalannya aplikasi.
 
 ## Dokumentasi API
 ### Manajemen User

@@ -43,13 +43,15 @@ module.exports = {
 				sortOrder = orders[getOptions.order]
 			}
 			var orderClause = `ORDER BY ${sortColumn} ${sortOrder}`
-			//limit
+            //page
+			if(getOptions.page !== undefined) {
+                var limit = (getOptions.limit !== undefined) ? getOptions.limit : 10
+                var offset = (getOptions.page-1) * limit
+                offsetClause = `OFFSET ${offset}`
+            }
+            //limit
 			if(getOptions.limit !== undefined) {
 				limitClause = `LIMIT ${getOptions.limit}`
-			}
-			//offset
-			if(getOptions.offset !== undefined) {
-				offsetClause = `OFFSET ${getOptions.offset}`
 			}
             //run query
             

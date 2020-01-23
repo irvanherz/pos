@@ -27,15 +27,21 @@ module.exports = {
 				errors.push(new Error(`Sort order '${request.query.order}' is not supported.`))
 			}
 		}
-		//Limit and offset options
+		//Page filter
+		if(request.query.page) {
+			if(/^[0-9]+$/.test(request.query.page) == false){
+				errors.push(new Error(`Page filtering format is mismatch`))
+			} else if(request.query.page < 1){
+				errors.push(new Error(`Page parameter must be >= 1`))
+			}
+		}
+		//Limit options
 		if(request.query.limit !== undefined) {
 			if(/^[0-9]+$/.test(request.query.limit) == false){
 				errors.push(new Error(`Limit must be a number.`))
+			} else if(request.query.limit < 1){
+				errors.push(new Error(`Limit parameter must be >= 1`))
 			}
-		}
-		if(request.query.offset !== undefined) {
-			if(/^[0-9]+$/.test(request.query.limit) == false)
-				errors.push(new Error(`Offset must be a number.`))
 		}
 		//Take a decission
 		if(errors.length){
