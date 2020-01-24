@@ -6,8 +6,9 @@ module.exports = {
 	gets: (request, response, next) => {
 		var errors = []
 		//Query filter
-		if(request.query.q) {
-			if(/^.{3,20}$/.test(request.query.q) == false)
+		if(request.query.search) {
+			request.query.search = request.query.search.replace(/[^a-zA-z0-9-_ ]/,'')
+			if(request.query.search < 3 || request.query.search > 20)
 				errors.push(new Error(`Search query must be 3-20 characters.`))
 		}
 		//Date filter
@@ -123,6 +124,7 @@ module.exports = {
 				errors.push(new Error('Product description must be 15-100 chars.'))
 		}
 		//check image
+		console.log("aaaaaaaaaaaaaa"+request.file)
 		if(request.file){
 			request.body.image = request.file.filename
 		}

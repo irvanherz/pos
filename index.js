@@ -14,6 +14,7 @@ var corsOptions = {
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(morgan('dev'))
+app.use(express.static('./uploads'))
 app.use('/', cors(corsOptions), routeBase)
 
 server = app.listen(3001, "127.0.0.1", () => {

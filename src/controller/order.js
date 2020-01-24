@@ -13,7 +13,6 @@ module.exports = {
             }
             return helper.response(response,200,resultOrders)
         } catch (error) {
-            console.log('aaaaaaaaaaaaa')
             return helper.response(response,400,error)
         }
     },

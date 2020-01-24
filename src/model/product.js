@@ -7,12 +7,11 @@ module.exports = {
             var whereClause = ""
             var limitClause = "LIMIT 10"
             var offsetClause = "OFFSET 0"
-            var orderClause = "ORDER BY updated_at DESC"
+            var orderClause = "ORDER BY a.updated_at DESC"
             
             var whereConditions = []
-            if(getOptions.q !== undefined) {
-				getOptions.q = connection.escape(getOptions.q)
-				whereConditions.push(`name LIKE "%${getOptions.q}%"`)
+            if(getOptions.search !== undefined) {
+				whereConditions.push(`(a.name LIKE '%${getOptions.search}%')`)
             }
             if(getOptions.date !== undefined) {
                 if(/^[0-9]{8}-[0-9]{8}$/.test(getOptions.date) == true){
@@ -32,10 +31,10 @@ module.exports = {
             }
             if(whereConditions.length) whereClause = "WHERE " + whereConditions.join(" AND ")
 			//sorting
-			var sortColumn = 'updated_at'
+			var sortColumn = 'a.updated_at'
 			var sortOrder = 'desc'
 			if(getOptions.sort !== undefined) {
-				columns = {name:'name', category:'category', date:'updated_at'}
+				columns = {name:'a.name', category:'a.category', date:'a.updated_at'}
 				sortColumn = columns[getOptions.sort]
 			}
 			if(getOptions.order !== undefined) {
@@ -57,19 +56,17 @@ module.exports = {
             
             connection.query(`
                             SELECT 
-                                a.id,a.name,a.description,b.name AS category,a.image,a.price,a.created_at,a.updated_at
+                                a.id,a.name,a.description,b.name AS category_name,a.image,a.price,a.created_at,a.updated_at
                             FROM
                                 product AS a
-							LEFT JOIN
+							JOIN
 							    category AS b
-							ON a.category_id=b.id
-							${whereClause}
-							${orderClause}
-							${limitClause}
-							${offsetClause}`, (error, result) => {
+                            ON a.category_id=b.id ${whereClause} ${orderClause} ${limitClause} ${offsetClause}`, (error, result) => {
                 if(!error){
                     resolve(result)
                 } else {
+                    console.log(error);
+                    
                     reject(error)
                 }
             })
@@ -79,12 +76,12 @@ module.exports = {
         return new Promise((resolve, reject) => {
             connection.query(`
                     SELECT 
-                        a.id,a.name,a.description,b.name AS category,a.image,a.price,a.created_at,a.updated_at
+                        a.id,a.name,a.description,b.name AS category_name,a.image,a.price,a.created_at,a.updated_at
                     FROM
                         product AS a
                     LEFT JOIN
                         category AS b
-                    ON a.category_id=b.id WHERE a.id=${id}`, (error, result) => {
+                    ON a.category_id=b.id a.id=?`,id, (error, result) => {
                 if(!error){
                     if(0 in result){
                         resolve(result[0])
@@ -111,27 +108,17 @@ module.exports = {
     },
     put: async (id, setData) => {
         return new Promise((resolve, reject) => {
-            connection.query("SELECT image FROM product WHERE id=?", id, (error, result) => {
-                var oldImage = (result[0]) ? result[0].image : null
-                connection.query("UPDATE product SET ?,updated_at=CURRENT_TIMESTAMP WHERE id=?", [setData,id], (error, result) => {
-                    if(!error){
-                        if(result.changedRows){
-                            if(oldImage && setData.image){
-                                require('fs').unlink(`uploads/${oldImage}`, (err) => {
-                                    newResult = {id:result.insertId, ...setData}
-                                    resolve(newResult)
-                                })
-                            } else {
-                                newResult = {id:result.insertId, ...setData}
-                                resolve(newResult)
-                            }
-                        } else {
-                            reject(new Error("Specified ID not found."))
-                        }
+            connection.query("UPDATE product SET ?,updated_at=CURRENT_TIMESTAMP WHERE id=?", [setData,id], (error, result) => {
+                if(!error){
+                    if(result.changedRows){
+                        newResult = {id:result.insertId, ...setData}
+                        resolve(newResult)
                     } else {
-                        reject(error)
+                        reject(new Error("Specified ID not found."))
                     }
-                })
+                } else {
+                    reject(error)
+                }
             })
         })
     },
