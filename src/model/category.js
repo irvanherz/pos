@@ -2,44 +2,66 @@ const express = require('express')
 const connection = require('../config/mysql')
 
 module.exports = {
-    gets: (getOptions) => {
+    gets: (params) => {
         return new Promise((resolve, reject) => {
-            var whereClause = ""
-            var limitClause = "LIMIT 100"
-            var offsetClause = "OFFSET 0"
-            var orderClause = "ORDER BY updated_at DESC"
             
-			//sorting
-			var sortColumn = 'updated_at'
-			var sortOrder = 'desc'
-			if(getOptions.sort !== undefined) {
-				columns = {name:'name',date:'updated_at'}
-				sortColumn = columns[getOptions.sort]
-			}
-			if(getOptions.order !== undefined) {
-				orders = {asc:'asc', desc:'desc'}
-				sortOrder = orders[getOptions.order]
-			}
-			var orderClause = `ORDER BY ${sortColumn} ${sortOrder}`
-			//limit
-			if(getOptions.limit !== undefined) {
-				limitClause = `LIMIT ${getOptions.limit}`
-			}
-			//offset
-			if(getOptions.offset !== undefined) {
-				offsetClause = `OFFSET ${getOptions.offset}`
-			}
-            //run query
+            //Filtering
+            var where = []
+            if(params.search) {
+                where.push(`((name LIKE '${params.search}%') OR (name LIKE '%${params.search}') OR (name LIKE '%${params.search}%'))`)
+            }
+            var whereClause = (where.length) ? "WHERE " + where.join(" AND ") : ""
+            //Sorting
+            var sort = []
+            sort[0] = 'updated_at'
+            sort[1] = 'desc'
+            
+            if(params.sort !== undefined) {
+                const columns = {name:'name', date:'updated_at'}
+                sort[0] = columns[params.sort]
+            }
+            if(params.order) {
+                const orders = {asc:'asc', desc:'desc'}
+                sort[1] = orders[params.order]
+            }
+            var orderClause = `ORDER BY ${sort[0]} ${sort[1]}`
+            
+            //Pagination
+            var itemsPerPage = 10
+            var currentPage = 1
+            if(params.itemsPerPage) {
+                itemsPerPage = params.itemsPerPage
+            }
+            if(params.page) {
+                currentPage = params.page
+            }
+            var limit = [0,10]
+            limit[0] = (currentPage - 1) * itemsPerPage
+            limit[1] = itemsPerPage
+            limitClause = `LIMIT ${limit[0]}, ${limit[1]}`
+
+
+            //ACTION!!!
 			connection.query(`
-                            SELECT * FROM category
-							${whereClause}
-							${orderClause}
-							${limitClause}
-							${offsetClause}`, (error, result) => {
-                if(!error){
-                    resolve(result)
+                SELECT SQL_CALC_FOUND_ROWS * FROM category
+                ${whereClause}
+                ${orderClause}
+                ${limitClause}`, (error1, result1) => {
+                if(!error1){
+                    connection.query(`SELECT FOUND_ROWS() as found_rows`, (error2, result2) => {
+                        var totalItems = result2[0].found_rows
+                        var totalPages = Math.ceil(totalItems / itemsPerPage)
+                        const finalResult = {
+                            totalPages,
+                            currentPage,
+                            itemsPerPage, 
+                            totalItems,
+                            items: result1
+                        }
+                        resolve(finalResult)
+                    })
                 } else {
-                    reject(error)
+                    reject(error1)
                 }
             })
         })

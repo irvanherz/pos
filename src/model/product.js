@@ -2,72 +2,66 @@ const express = require('express')
 const connection = require('../config/mysql')
 
 module.exports = {
-    gets: (getOptions) => {
+    gets: (params) => {
         return new Promise((resolve, reject) => {
-            var whereClause = ""
-            var limitClause = "LIMIT 10"
-            var offsetClause = "OFFSET 0"
-            var orderClause = "ORDER BY a.updated_at DESC"
+            //Filtering
+            var where = []
+            if(params.search) {
+				where.push(`((a.name LIKE '${params.search}%') OR (a.name LIKE '%${params.search}') OR (a.name LIKE '%${params.search}%'))`)
+            }
+            var whereClause = (where.length) ? "WHERE " + where.join(" AND ") : ""
+			//Sorting
+            var sort = []
+            sort[0] = 'a.updated_at'
+            sort[1] = 'desc'
             
-            var whereConditions = []
-            if(getOptions.search !== undefined) {
-				whereConditions.push(`(a.name LIKE '%${getOptions.search}%')`)
-            }
-            if(getOptions.date !== undefined) {
-                if(/^[0-9]{8}-[0-9]{8}$/.test(getOptions.date) == true){
-                    var y0 = getOptions.date.substring(0, 4);
-                    var m0 = getOptions.date.substring(4, 6);
-                    var d0 = getOptions.date.substring(6, 8);
-                    var y1 = getOptions.date.substring(9, 13);
-                    var m1 = getOptions.date.substring(13, 15);
-                    var d1 = getOptions.date.substring(15, 17);
-                    whereConditions.push(`(a.updated_at BETWEEN '${y0}-${m0}-${d0} 00:00:00' AND '${y1}-${m1}-${d1} 23:59:59')`)
-                } else if(/^[0-9]{8}$/.test(getOptions.date) == true) {
-                    var y0 = getOptions.date.substring(0, 4);
-                    var m0 = getOptions.date.substring(4, 6);
-                    var d0 = getOptions.date.substring(6, 8);
-                    whereConditions.push(`(a.updated_at BETWEEN '${y0}-${m0}-${d0} 00:00:00' AND '${y0}-${m0}-${d0} 23:59:59')`)
-                }
-            }
-            if(whereConditions.length) whereClause = "WHERE " + whereConditions.join(" AND ")
-			//sorting
-			var sortColumn = 'a.updated_at'
-			var sortOrder = 'desc'
-			if(getOptions.sort !== undefined) {
-				columns = {name:'a.name', category:'a.category', date:'a.updated_at'}
-				sortColumn = columns[getOptions.sort]
+			if(params.sort !== undefined) {
+				const columns = {name:'a.name', category:'a.category', date:'a.updated_at', price:'a.price'}
+				sort[0] = columns[params.sort]
 			}
-			if(getOptions.order !== undefined) {
-				orders = {asc:'asc', desc:'desc'}
-				sortOrder = orders[getOptions.order]
+			if(params.order) {
+				const orders = {asc:'asc', desc:'desc'}
+				sort[1] = orders[params.order]
 			}
-			var orderClause = `ORDER BY ${sortColumn} ${sortOrder}`
-            //page
-			if(getOptions.page !== undefined) {
-                var limit = (getOptions.limit !== undefined) ? getOptions.limit : 10
-                var offset = (getOptions.page-1) * limit
-                offsetClause = `OFFSET ${offset}`
-            }
-            //limit
-			if(getOptions.limit !== undefined) {
-				limitClause = `LIMIT ${getOptions.limit}`
-			}
-            //run query
+			var orderClause = `ORDER BY ${sort[0]} ${sort[1]}`
             
+            //Pagination
+            var itemsPerPage = 10
+            var currentPage = 1
+            if(params.itemsPerPage) {
+                itemsPerPage = params.itemsPerPage
+            }
+            if(params.page) {
+                currentPage = params.page
+            }
+            var limit = [0,10]
+            limit[0] = (currentPage - 1) * itemsPerPage
+            limit[1] = itemsPerPage
+            limitClause = `LIMIT ${limit[0]}, ${limit[1]}`
+            //ACTION!
             connection.query(`
-                            SELECT 
-                                a.id,a.name,a.description,b.name AS category_name,a.image,a.price,a.created_at,a.updated_at
-                            FROM
-                                product AS a
-							JOIN
-							    category AS b
-                            ON a.category_id=b.id ${whereClause} ${orderClause} ${limitClause} ${offsetClause}`, (error, result) => {
-                if(!error){
-                    resolve(result)
+                SELECT SQL_CALC_FOUND_ROWS
+                    a.id,a.name,a.description,b.name AS category_name,a.image,a.price,a.created_at,a.updated_at
+                FROM
+                    product AS a
+                JOIN
+                    category AS b
+                ON a.category_id=b.id ${whereClause} ${orderClause} ${limitClause}`, (error1, result1) => {
+                if(!error1){
+                    connection.query(`SELECT FOUND_ROWS() as found_rows`, (error2, result2) => {
+                        var totalItems = result2[0].found_rows
+                        var totalPages = Math.ceil(totalItems / itemsPerPage)
+                        const finalResult = {
+                            totalPages,
+                            currentPage,
+                            itemsPerPage, 
+                            totalItems,
+                            items: result1
+                        }
+                        resolve(finalResult)
+                    })
                 } else {
-                    console.log(error);
-                    
-                    reject(error)
+                    reject(error1)
                 }
             })
         })
@@ -76,12 +70,12 @@ module.exports = {
         return new Promise((resolve, reject) => {
             connection.query(`
                     SELECT 
-                        a.id,a.name,a.description,b.name AS category_name,a.image,a.price,a.created_at,a.updated_at
+                        a.*,b.name AS category_name
                     FROM
                         product AS a
-                    LEFT JOIN
+                    JOIN
                         category AS b
-                    ON a.category_id=b.id a.id=?`,id, (error, result) => {
+                    ON a.category_id=b.id WHERE a.id=?`,id, (error, result) => {
                 if(!error){
                     if(0 in result){
                         resolve(result[0])

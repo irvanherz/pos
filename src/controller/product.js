@@ -24,6 +24,12 @@ module.exports = {
     post: async (request, response) => {
         try {
             const result = await product.post(request.body)
+			if(result.image){
+                mv(request.file.path, path.join(process.env.UPLOAD_PATH, request.file.filename),(err) => {
+                    //nope
+                })
+                return helper.response(response,200,result)
+            }
             return helper.response(response,200,result)
         } catch (error) {
             return helper.response(response,400,error)

@@ -16,7 +16,7 @@ module.exports = {
             const result = await user.get(request.body.username, request.body.password)
             const loginData = {id:result.id, name:result.name, username:result.username, role:result.role}
             console.log(loginData);
-            const token = jwt.sign(loginData,  "RAHASIA", {algorithm:"HS256", expiresIn: "7d", })
+            const token = "Bearer " + jwt.sign(loginData,  "RAHASIA", {algorithm:"HS256", expiresIn: "7d", })
             return helper.response(response,200,{...result, token})
         } catch (error) {
             return helper.response(response,400,error)

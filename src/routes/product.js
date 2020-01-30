@@ -43,9 +43,9 @@ const uploadFilter = (request, response, next) => {
 }
 
 route.get("/", verify.gets, product.gets)
-route.get("/:id", verify.get, product.get)
+route.get("/:id([0-9]+)", verify.get, product.get)
 route.post("/", uploadFilter, verify.post, product.post)
-route.put("/:id", uploadFilter, verify.put, product.put)
-route.delete("/:id", verify.delete, product.delete)
+route.put("/:id([0-9]+)", uploadFilter, verify.put, product.put)
+route.delete("/:id([0-9]+)", verify.delete, product.delete)
 
 module.exports = route

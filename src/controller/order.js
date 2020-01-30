@@ -7,9 +7,8 @@ module.exports = {
     gets: async (request, response) => {
         try {
             var resultOrders = await order.gets(request.query)
-            console.log(resultOrders)
-            for(var i=0; i<resultOrders.length; i++){
-                resultOrders[i].orderItems = await orderItem.gets(resultOrders[i].invoice_id)
+            for(var i=0; i<resultOrders.items.length; i++){
+                resultOrders.items[i].orderItems = await orderItem.gets(resultOrders[i].invoice_id)
             }
             return helper.response(response,200,resultOrders)
         } catch (error) {
@@ -46,7 +45,8 @@ module.exports = {
                 resultItems.push(newItem)
             }
             totalOrderPrice = totalOrderPrice + (totalOrderPrice * 10 / 100)
-            setOrder = {cashier_id:request.user.id, invoice_id:randomId, price:totalOrderPrice}
+            //setOrder = {cashier_id:request.user.id, invoice_id:randomId, price:totalOrderPrice}
+			setOrder = {cashier_id:1, invoice_id:randomId, price:totalOrderPrice}
             const resultOrder = await order.post(setOrder)
             result = {
                 ...resultOrder,

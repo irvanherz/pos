@@ -6,10 +6,12 @@ const productRoute = require('./product')
 const categoryRoute = require('./category')
 const authRoute = require('./auth')
 const orderRoute = require('./order')
+const reportRoute = require('./report')
 
-route.use('/products', authorization, productRoute)
-route.use('/categories', authorization, categoryRoute)
+route.use('/products', /*authorization,*/ productRoute)
+route.use('/products', /*authorization,*/ reportRoute)
+route.use('/categories', /*authorization,*/ categoryRoute)
 route.use('/auth', authRoute)
-route.use('/orders', authorization, orderRoute)
+route.use('/orders', /*authorization,*/ orderRoute)
 
 module.exports = route
