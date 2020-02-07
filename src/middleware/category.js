@@ -6,34 +6,45 @@ const helper = require('../helper/')
 module.exports = {
 	gets: (request, response, next) => {
 		var errors = []
-
-		if(request.query.sort !== undefined) {
+		//Query name filter
+		if(request.query.search) {
+			request.query.search = request.query.search.replace(/[^a-zA-z0-9-_ ]/,'')
+			if(request.query.search < 3 || request.query.search > 20)
+				errors.push(new Error(`Search query must be 3-20 characters.`))
+		}
+		//Sort options
+		if(request.query.sort) {
 			if(['name', 'date'].includes(request.query.sort) == false){
 				errors.push(new Error(`Sort by '${request.query.sort}' is not supported.`))
 			}
 		}
-
 		if(request.query.order !== undefined) {
 			if(['asc', 'desc'].includes(request.query.order) == false){
-				errors.push(new Error(`Order '${request.query.order}' is not supported.`))
+				errors.push(new Error(`Sort order '${request.query.order}' is not supported.`))
 			}
 		}
-
-		if(request.query.limit !== undefined) {
-			if(/^[0-9]+$/.test(request.query.limit) == false){
-				errors.push(new Error(`Limit must be a number.`))
+		//Pagination
+		if(request.query.page) {
+			if(/^[0-9]+$/.test(request.query.page) == false){
+				errors.push(new Error(`Page filtering format is mismatch`))
+			} else if(request.query.page < 1){
+				errors.push(new Error(`Page parameter must be >= 1`))
 			}
-		}
-
-		if(request.query.offset !== undefined) {
-			if(/^[0-9]+$/.test(request.query.limit) == false)
-				errors.push(new Error(`Offset must be a number.`))
 		}
 		
+		if(request.query.itemsPerPage) {
+			if(/^[0-9]+$/.test(request.query.itemsPerPage) == false){
+				errors.push(new Error(`itemsPerPage must be a number.`))
+			} else if(request.query.itemsPerPage < 1){
+				errors.push(new Error(`itemsPerPage parameter must be >= 1`))
+			}
+		}
+		//Take a decission
 		if(errors.length){
 			return helper.response(response,400,errors)
+		} else {
+			next()
 		}
-		next()
 	},
 	get: (request, response, next) => {
 		if(/^[0-9]+$/.test(request.params.id) == false){

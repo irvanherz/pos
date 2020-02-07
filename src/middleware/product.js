@@ -11,6 +11,14 @@ module.exports = {
 			if(request.query.search < 3 || request.query.search > 20)
 				errors.push(new Error(`Search query must be 3-20 characters.`))
 		}
+		//Category filter
+		if(request.query.category) {
+			if(/^[0-9]+$/.test(request.query.category) == false){
+				errors.push(new Error(`Category filtering format is mismatch`))
+			} else if(request.query.category < 1){
+				errors.push(new Error(`Category parameter must be >= 1`))
+			}
+		}
 		//Sort options
 		if(request.query.sort) {
 			if(['name', 'category', 'date', 'price'].includes(request.query.sort) == false){
@@ -128,7 +136,6 @@ module.exports = {
 				errors.push(new Error('Product description must be 15-100 chars.'))
 		}
 		//check image
-		console.log("aaaaaaaaaaaaaa"+request.file)
 		if(request.file){
 			request.body.image = request.file.filename
 		}

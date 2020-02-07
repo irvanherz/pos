@@ -4,7 +4,6 @@ const connection = require('../config/mysql')
 module.exports = {
     gets: (params) => {
         return new Promise((resolve, reject) => {
-            
             //Filtering
             var where = []
             if(params.search) {
@@ -95,13 +94,13 @@ module.exports = {
     },
     put: (id, setData) => {
         return new Promise((resolve, reject) => {
-            connection.query("UPDATE category SET ?,updated_at=CURRENT_TIMESTAMP WHERE id=?", [setData,id], (error, result) => {
+            connection.query("UPDATE category SET ? WHERE id=?", [setData,id], (error, result) => {
                 if(!error){
-                    if(result.changedRows){
+                    if(result.affectedRows){
                         newResult = {id, ...setData}
                         resolve(newResult)
                     } else {
-                        reject(new Error(`Order with id:${id} not found.`))
+                        reject(new Error(`Category with id:${id} not found.`))
                     }
                 } else {
                     reject(error)

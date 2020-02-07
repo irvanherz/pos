@@ -91,7 +91,7 @@ module.exports = {
     },
     put: (id, setData) => {
         return new Promise((resolve, reject) => {
-            connection.query("UPDATE order_session SET ?,updated_at=CURRENT_TIMESTAMP WHERE id=?", [setData,id], (error, result) => {
+            connection.query("UPDATE order_session SET ? WHERE id=?", [setData,id], (error, result) => {
                 if(!error){
                     if(result.changedRows){
                         newResult = {id, ...setData}

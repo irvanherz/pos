@@ -40,7 +40,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             connection.query("UPDATE order_item SET ?,updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND id=?", [setData, orderId, itemId], (error, result) => {
                 if(!error){
-                    if(result.changedRows){
+                    if(result.affectedRows){
                         newResult = {id:itemId, order_id:orderId, ...setData}
                         resolve(newResult)
                     } else {

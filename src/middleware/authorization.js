@@ -22,5 +22,15 @@ module.exports = {
         } else {
             return helper.response(response,400,new Error("Login token not supplied."))
         }
-	}
+    },
+    
+    checkRole: (roles) => {
+        return (request, response, next) => {
+            if(roles.includes(request.user.role)){
+                next()
+            } else {
+                return helper.response(response,400,new Error("Your role doesn't have permission to access this endpoint."))
+            }
+        }
+    }
 }

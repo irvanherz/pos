@@ -9,6 +9,9 @@ module.exports = {
             if(params.search) {
 				where.push(`((a.name LIKE '${params.search}%') OR (a.name LIKE '%${params.search}') OR (a.name LIKE '%${params.search}%'))`)
             }
+            if(params.category) {
+				where.push(`(a.category_id=${params.category})`)
+            }
             var whereClause = (where.length) ? "WHERE " + where.join(" AND ") : ""
 			//Sorting
             var sort = []
@@ -102,9 +105,9 @@ module.exports = {
     },
     put: async (id, setData) => {
         return new Promise((resolve, reject) => {
-            connection.query("UPDATE product SET ?,updated_at=CURRENT_TIMESTAMP WHERE id=?", [setData,id], (error, result) => {
+            connection.query("UPDATE product SET ? WHERE id=?", [setData,id], (error, result) => {
                 if(!error){
-                    if(result.changedRows){
+                    if(result.affectedRows){
                         newResult = {id:result.insertId, ...setData}
                         resolve(newResult)
                     } else {
