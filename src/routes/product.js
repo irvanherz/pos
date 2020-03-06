@@ -2,10 +2,11 @@ const express = require('express')
 const route = express.Router()
 const product = require('../controller/product.js')
 const verify = require('../middleware/product.js')
-const os = require("os")
-const path = require("path")
+const os = require('os')
+const path = require('path')
 const helper = require('../helper')
 const {checkRole} = require('../middleware/authorization')
+const process = require('process')
 
 const multer = require('multer')
 const multerOptions = {
@@ -14,7 +15,7 @@ const multerOptions = {
 			cb(null, os.tmpdir())
 		},
 		filename: function (req, file, cb) {
-		  cb(null, Date.now() + path.extname(file.originalname))
+			cb(null, Date.now() + path.extname(file.originalname))
 		}
 	}),
 	fileFilter: (req, file, cb) => {
@@ -43,10 +44,10 @@ const uploadFilter = (request, response, next) => {
 	})
 }
 
-route.get("/", verify.gets, product.gets)
-route.get("/:id([0-9]+)", verify.get, product.get)
-route.post("/", checkRole([0]), uploadFilter, verify.post, product.post)
-route.put("/:id([0-9]+)", checkRole([0]), uploadFilter, verify.put, product.put)
-route.delete("/:id([0-9]+)", checkRole([0]), verify.delete, product.delete)
+route.get('/', verify.gets, product.gets)
+route.get('/:id([0-9]+)', verify.get, product.get)
+route.post('/', checkRole([0]), uploadFilter, verify.post, product.post)
+route.put('/:id([0-9]+)', checkRole([0]), uploadFilter, verify.put, product.put)
+route.delete('/:id([0-9]+)', checkRole([0]), verify.delete, product.delete)
 
 module.exports = route

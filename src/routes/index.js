@@ -1,5 +1,5 @@
-const express = require("express");
-const route = express.Router();
+const express = require('express')
+const route = express.Router()
 const {authorization} = require('../middleware/authorization')
 
 const productRoute = require('./product')

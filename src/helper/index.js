@@ -5,14 +5,11 @@ module.exports = {
 		result.status = status || 200
 		if(status >= 400){
 			if(data instanceof Error){
-				result.errors = [{name: data.name, message: data.message}]
+				result.errors = [{code: 'GeneralError', errno: 9999, message: data.message}]
 			} else if (data instanceof Array) {
-				result.errors = []
-				data.forEach((val) => {
-					if(val instanceof Error){
-						result.errors.push({name: val.name, message: val.message})
-					}
-				})
+				result.errors = data
+			} else {
+				result.errors = [data]
 			}
 		} else result.data = data
 		
