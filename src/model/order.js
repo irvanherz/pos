@@ -2,49 +2,48 @@ const connection = require('../config/mysql')
 
 module.exports = {
 	gets: (params) => {
-		console.log('xxxxxxxxxxxxxxxxxxxxx', params)
+		//Filtering
+		var where = []
+		if (params.userId) {
+			where.push(`(user_id=${params.userId})`)
+		}
+		if (params.dateStart) {
+			where.push(`(DATE(created_at) >= '${params.dateStart}')`)
+		}
+		if (params.dateEnd) {
+			where.push(`(DATE(created_at) <= '${params.dateEnd}')`)
+		}
+		var whereClause = (where.length) ? 'WHERE ' + where.join(' AND ') : ''
+		//Sorting
+		var sort = []
+		sort[0] = 'updated_at'
+		sort[1] = 'desc'
+
+		if (params.sort) {
+			const columns = { name: 'name', date: 'updated_at', price: 'price' }
+			sort[0] = columns[params.sort]
+		}
+		if (params.order) {
+			const orders = { asc: 'asc', desc: 'desc' }
+			sort[1] = orders[params.order]
+		}
+		var orderClause = `ORDER BY ${sort[0]} ${sort[1]}`
+
+		//Pagination
+		var itemsPerPage = 10
+		var currentPage = 1
+		if (params.itemsPerPage) {
+			itemsPerPage = params.itemsPerPage
+		}
+		if (params.page) {
+			currentPage = params.page
+		}
+		var limit = [0, 10]
+		limit[0] = (currentPage - 1) * itemsPerPage
+		limit[1] = itemsPerPage
+		const limitClause = `LIMIT ${limit[0]}, ${limit[1]}`
+
 		return new Promise((resolve, reject) => {
-			//Filtering
-			var where = []
-			if(params.userId) {
-				where.push(`(user_id=${params.userId})`)
-			}
-			if (params.dateStart) {
-				where.push(`(DATE(created_at) >= '${params.dateStart}')`)
-			}
-			if (params.dateEnd) {
-				where.push(`(DATE(created_at) <= '${params.dateEnd}')`)
-			}
-			var whereClause = (where.length) ? 'WHERE ' + where.join(' AND ') : ''
-			//Sorting
-			var sort = []
-			sort[0] = 'updated_at'
-			sort[1] = 'desc'
-
-			if(params.sort) {
-				const columns = {name:'name', date:'updated_at', price:'price'}
-				sort[0] = columns[params.sort]
-			}
-			if(params.order) {
-				const orders = {asc:'asc', desc:'desc'}
-				sort[1] = orders[params.order]
-			}
-			var orderClause = `ORDER BY ${sort[0]} ${sort[1]}`
-
-			//Pagination
-			var itemsPerPage = 10
-			var currentPage = 1
-			if(params.itemsPerPage) {
-				itemsPerPage = params.itemsPerPage
-			}
-			if(params.page) {
-				currentPage = params.page
-			}
-			var limit = [0,10]
-			limit[0] = (currentPage - 1) * itemsPerPage
-			limit[1] = itemsPerPage
-			const limitClause = `LIMIT ${limit[0]}, ${limit[1]}`
-			//ACTION
 			connection.query(`
 				SELECT SQL_CALC_FOUND_ROWS *
 				FROM (SELECT a.*, b.name user_name, COUNT(*) AS count_items, SUM(c.qty) AS sum_items
@@ -53,20 +52,9 @@ module.exports = {
 						LEFT JOIN order_item c ON a.invoice_id=c.order_id
 						GROUP BY a.invoice_id
 					) x
-					${whereClause} ${orderClause} ${limitClause}
-				`, (error1, result1) => {
-				if(!error1){
-					connection.query('SELECT FOUND_ROWS() as found_rows', (error2, result2) => {
-						var totalItems = result2[0].found_rows
-						var totalPages = Math.ceil(totalItems / itemsPerPage)
-						resolve({
-							totalPages,
-							currentPage,
-							itemsPerPage, 
-							totalItems,
-							items: result1
-						})
-					})
+					${whereClause} ${orderClause} ${limitClause}`, (error, result) => {
+				if(!error){
+					resolve(result)
 				} else {
 					reject({
 						code: 'DatabaseError',
@@ -74,6 +62,28 @@ module.exports = {
 						message: 'Cannot read requested orders from database'
 					})
 				}
+			})
+		}).then(dataItems => {
+			return new Promise((resolve, reject) => {
+				connection.query('SELECT FOUND_ROWS() as found_rows', (error, result) => {
+					if(!error){
+						var totalItems = result[0].found_rows
+						var totalPages = Math.ceil(totalItems / itemsPerPage)
+						resolve({
+							totalPages,
+							currentPage,
+							itemsPerPage,
+							totalItems,
+							items: dataItems
+						})
+					} else {
+						reject({
+							code: 'DatabaseError',
+							errno: '1301',
+							message: 'Cannot read requested orders from database'
+						})
+					}
+				})
 			})
 		})
 	},
