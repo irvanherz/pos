@@ -44,15 +44,16 @@ module.exports = {
 		const limitClause = `LIMIT ${limit[0]}, ${limit[1]}`
 
 		return new Promise((resolve, reject) => {
-			connection.query(`
-				SELECT SQL_CALC_FOUND_ROWS *
+			const query = `
+				SELECT *
 				FROM (SELECT a.*, b.name user_name, COUNT(*) AS count_items, SUM(c.qty) AS sum_items
 						FROM order_session a
 						LEFT JOIN user b ON a.user_id=b.id
 						LEFT JOIN order_item c ON a.invoice_id=c.order_id
 						GROUP BY a.invoice_id
 					) x
-					${whereClause} ${orderClause} ${limitClause}`, (error, result) => {
+					${whereClause} ${orderClause} ${limitClause}`
+			connection.query(query, (error, result) => {
 				if(!error){
 					resolve(result)
 				} else {
@@ -65,7 +66,15 @@ module.exports = {
 			})
 		}).then(dataItems => {
 			return new Promise((resolve, reject) => {
-				connection.query('SELECT FOUND_ROWS() as found_rows', (error, result) => {
+				const query = `SELECT COUNT(*) as found_rows
+					FROM (SELECT a.*, b.name user_name, COUNT(*) AS count_items, SUM(c.qty) AS sum_items
+						FROM order_session a
+						LEFT JOIN user b ON a.user_id=b.id
+						LEFT JOIN order_item c ON a.invoice_id=c.order_id
+						GROUP BY a.invoice_id
+					) x
+					${whereClause}`
+				connection.query(query, (error, result) => {
 					if(!error){
 						var totalItems = result[0].found_rows
 						var totalPages = Math.ceil(totalItems / itemsPerPage)

@@ -40,7 +40,7 @@ module.exports = {
 
 		return new Promise((resolve, reject) => {
 			connection.query(`
-                SELECT SQL_CALC_FOUND_ROWS * FROM category
+                SELECT * FROM category
                 ${whereClause}
                 ${orderClause}
                 ${limitClause}`, (error, result) => {
@@ -56,7 +56,7 @@ module.exports = {
 			})
 		}).then(categories => {
 			return new Promise ((resolve, reject) => {
-				connection.query('SELECT FOUND_ROWS() as found_rows', (error, result) => {
+				connection.query(`SELECT COUNT(*) as found_rows FROM category ${ whereClause }`, (error, result) => {
 					if(!error){
 						var totalItems = result[0].found_rows
 						var totalPages = Math.ceil(totalItems / itemsPerPage)

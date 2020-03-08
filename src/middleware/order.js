@@ -38,7 +38,7 @@ module.exports = {
 		}
 		//Sort options
 		if (request.query.sort) {
-			if (['name', 'category', 'date', 'price'].includes(request.query.sort) == false) {
+			if (['date', 'price'].includes(request.query.sort) == false) {
 				errors.push({
 					code: 'ValidationError',
 					errno: '1000',

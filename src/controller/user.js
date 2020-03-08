@@ -23,6 +23,7 @@ module.exports = {
 		}
 	},
 	post: async (request, response) => {
+		console.log(request.body)
 		try {
 			const result = await user.post(request.body)
 			return helper.response(response, 200, result)
