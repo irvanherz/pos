@@ -14,9 +14,11 @@ var corsOptions = {
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(morgan('dev'))
-app.use("/assets",express.static('./uploads'))
+app.use('/assets',express.static('./uploads'))
 app.use('/', cors(corsOptions), routeBase)
 
-server = app.listen(3001, "127.0.0.1", () => {
-	console.log("Listening on 127.0.0.1:3001")
+const server = app.listen(3001, '127.0.0.1', () => {
+	console.log('Listening on 127.0.0.1:3001')
 })
+
+module.exports = server

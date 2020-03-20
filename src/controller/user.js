@@ -1,9 +1,5 @@
 const user = require('../model/user')
 const helper = require('../helper/index')
-const mv = require('mv')
-const fs = require('fs')
-const path = require('path')
-const process = require('process')
 
 module.exports = {
 	gets: async (request, response) => {
@@ -23,7 +19,6 @@ module.exports = {
 		}
 	},
 	post: async (request, response) => {
-		console.log(request.body)
 		try {
 			const result = await user.post(request.body)
 			return helper.response(response, 200, result)
